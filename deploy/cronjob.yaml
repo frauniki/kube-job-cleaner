@@ -23,7 +23,8 @@ spec:
             - name: cleaner
               image: "frauniki/kube-job-cleaner:latest"
               args:
-                - --ignore-namespaces $IGNORE_NAMESPACES
+                - --ignore-namespaces
+                - $(IGNORE_NAMESPACES)
               env:
                 - name: IGNORE_NAMESPACES
                   valueFrom:
