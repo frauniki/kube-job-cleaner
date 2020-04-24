@@ -1,6 +1,6 @@
 .PHONY: test docker push
 
-IMAGE            ?= hjacobs/kube-job-cleaner
+IMAGE            ?= frauniki/kube-job-cleaner
 VERSION          ?= $(shell git describe --tags --always --dirty)
 TAG              ?= $(VERSION)
 

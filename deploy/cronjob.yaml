@@ -1,3 +1,4 @@
+---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -5,7 +6,7 @@ metadata:
   namespace: kube-job-cleaner
   labels:
     application: kube-job-cleaner
-    version: "0.1"
+    version: "0.9"
 spec:
   schedule: "17 * * * *"
   jobTemplate:
@@ -14,17 +15,34 @@ spec:
         metadata:
           labels:
             application: kube-job-cleaner
-            version: "0.1"
+            version: "0.9"
         spec:
           serviceAccountName: kube-job-cleaner
           restartPolicy: OnFailure
           containers:
-          - name: cleaner
-            image: "hjacobs/kube-job-cleaner:0.7"
-            resources:
-              limits:
-                cpu: 200m
-                memory: 100Mi
-              requests:
-                cpu: 50m
-                memory: 50Mi
+            - name: cleaner
+              image: "frauniki/kube-job-cleaner:latest"
+              args:
+                - --ignore-namespaces
+                - $(IGNORE_NAMESPACES)
+              env:
+                - name: IGNORE_NAMESPACES
+                  valueFrom:
+                    configMapKeyRef:
+                      name: kube-job-cleaner
+                      key: IGNORE_NAMESPACES
+              resources:
+                limits:
+                  cpu: "2"
+                  memory: 2Gi
+                requests:
+                  cpu: 500m
+                  memory: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-job-cleaner
+  namespace: kube-job-cleaner
+data:
+  IGNORE_NAMESPACES: ""
