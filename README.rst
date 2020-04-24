@@ -34,3 +34,5 @@ There are a few options:
     Do not actually remove any jobs, only print what would be done
 ``--namespace``
     Only search for (and clean) jobs in a single namespace
+``--ignore-namespaces``
+    Ignore objects in this namespaces(--ignore-namespaces hoge,fuga,...)
