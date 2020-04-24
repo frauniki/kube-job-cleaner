@@ -90,6 +90,7 @@ def main():
     parser.add_argument('--timeout-seconds', type=int, default=-1, help='Kill all jobs older than ..')
     parser.add_argument('--dry-run', action='store_true', help='Dry run mode')
     parser.add_argument('--namespace', type=str, default=None, help='Only search for completed jobs in a single namespace')
+    parser.add_argument('--ignore-namespaces', type=str, default=None, help='Ignore objects in this namespaces(--ignore-namespaces hoge,fuga,...)')
     args = parser.parse_args()
 
     try:
@@ -100,12 +101,15 @@ def main():
     api = pykube.HTTPClient(config)
 
     namespace = args.namespace or pykube.all
+    ignore_ns = args.ignore_namespaces.split(',') if args.ignore_namespaces else []
 
     for job in pykube.Job.objects(api, namespace=namespace):
-        delete_if_expired(args.dry_run, job, job_expired(args.seconds, args.timeout_seconds, job))
+        if not job.namespace in ignore_ns:
+            delete_if_expired(args.dry_run, job, job_expired(args.seconds, args.timeout_seconds, job))
 
     for pod in pykube.Pod.objects(api, namespace=namespace):
-        delete_if_expired(args.dry_run, pod, pod_expired(args.seconds, pod))
+        if not job.namespace in ignore_ns:
+            delete_if_expired(args.dry_run, pod, pod_expired(args.seconds, pod))
 
 
 if __name__ == "__main__":
