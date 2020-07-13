@@ -6,7 +6,7 @@ metadata:
   namespace: kube-job-cleaner
   labels:
     application: kube-job-cleaner
-    version: "0.9"
+    version: "0.10"
 spec:
   schedule: "17 * * * *"
   jobTemplate:
@@ -21,7 +21,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: cleaner
-              image: "frauniki/kube-job-cleaner:latest"
+              image: "frauniki/kube-job-cleaner:0.10"
               args:
                 - --ignore-namespaces
                 - $(IGNORE_NAMESPACES)
